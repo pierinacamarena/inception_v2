@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  mariadb:
+    container_name: mariadb
+    build: ./requirements/nginx
+    restart: on-failure
+    ports:
+     - "127.0.0.1:3306:3306"
+    env_file:
+      - .env
+    volumes:
+      - mariadb_v:/var/lib/mysql
+  nginx:
+    container_name: nginx
+    build: ./requirements/nginx
+    ports:
+      - "443:443"
+    restart: always
+#volumes:
+#- ./html_data:/var/www/html
+
+
+volumes:
+  mariadb_v:
+    driver: local #default volume driver on linux
+    driver_opts:
+      type: 'none' 
+      o: 'bind'										 # Les Bind Mounts sont des volumes qui se montent sur un chemin d'accès à l'hôte, et ils peuvent être modifiés par d'autres processus en dehors de docker.
+      device: '/home/pcamaren/data/mariadb_v'
