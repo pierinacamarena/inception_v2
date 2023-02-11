@@ -27,8 +27,5 @@ EXPOSE 443
 
 #RUN mkdir -p /var/run/nginx
 
-RUN chmod 755 /var/www/html
-#RUN chown -R www-data:www-data /var/www/html
-
 #start Nginx when the container is run 
 CMD ["nginx", "-g", "daemon off;"]

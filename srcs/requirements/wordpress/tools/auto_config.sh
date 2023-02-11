@@ -2,11 +2,12 @@
 
 set -eux
 
-if [ ! -d "/var/www/wordpress" ]; then
+if [ ! -f "/var/www/wordpress/chech_install" ]; then
 	wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
 	cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && \
 	rm wordpress-6.0-fr_FR.tar.gz
 
+	touch /var/www/wordpress/chech_install
 	chown -R root:root /var/www/wordpress
 else
 	echo "wordpress already installed"
@@ -26,21 +27,27 @@ fi
 
 #check if there are the following users 
 #create a new user that is the administrator
-ADMIN_USER=$( eval "wp user get $WORDPRESS_ADMIN_USER --field=login" )
-WP_USER=$( eval "wp user get $WORDPRESS_USER --field=login" )
 
-if [ "$WORDPRESS_ADMIN_USER" -ne "$ADMIN_USER" ]; then
-	wp core install --url="$WORDPRESS_ADMIN_USER".42.fr \
+if [ ! -f /var/www/wordpress/admin_chech ]; then
+	wp core install --allow-root --url="$WORDPRESS_ADMIN_USER".42.fr \
 		--title="$WORDPRESS_TITLE" \
 		--admin_user="$WORDPRESS_ADMIN_USER" \
 		--admin_password="$WORDPRESS_ADMIN_PASSWORD" \
-		--admin_email="$WORDPRESS_ADMIN_EMAIL"
+		--admin_email="$WORDPRESS_ADMIN_EMAIL" \
+		--path='/var/www/wordpress'
+	touch /var/www/wordpress/admin_chech
 fi
 #create a second user that is not administrator
-if [ "$WORDPRESS_USER" -ne "$WP_USER" ]; then
-	wp user create "$WORDPRESS_USER" "$WORDPRESS_EMAIL" \
-		--password="$WORDPRESS_PASSWORD" 
+if [ ! -f /var/www/wordpress/user_chech ]; then
+	wp user create --allow-root "$WORDPRESS_USER" "$WORDPRESS_EMAIL" \
+		--user_pass="$WORDPRESS_PASSWORD" \
+		--path='/var/www/wordpress'
+
+	touch /var/www/wordpress/user_chech
 fi
+
+chown -R www-data:www-data /var/www/*
+chmod -R 755 /var/www/*
 
 mkdir -p /run/php
 
