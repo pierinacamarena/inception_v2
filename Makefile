@@ -1,19 +1,34 @@
-NAME = inception
-
-all: prune reload
-
-reload:
-	@docker-compose -f srcs/docker-compose.yml up --build -d
+all: rambo
+	echo "\r\033[K\033[32m[Compose] \033[0mLaunching"
+	sudo docker-compose -f srcs/docker-compose.yml up --build -d > /dev/null 2> /dev/null
+	echo "\033[1A\r\033[K\r\033[K\033[32m[Compose] \033[0mLaunched"
 
 stop:
-	@docker-compose -f srcs/docker-compose.yml down
+	echo "\r\033[K\033[31m[Compose] \033[0mStopping"
+	sudo docker-compose -f srcs/docker-compose.yml down > /dev/null 2> /dev/null
+	echo "\033[1A\r\033[K\r\033[K\033[31m[Compose] \033[0mStopped"
 
-clean:
-	@docker-compose -f srcs/docker-compose.yml down --volumes --rmi all
+clean: stop
+	echo "\r\033[K\033[31m[Volume] \033[0mRemoving"
+	sudo docker-compose -f srcs/docker-compose.yml down --volumes --rmi all > /dev/null 2> /dev/null
+	echo "\033[1A\r\033[K\r\033[K\033[31m[Volume] \033[0mRemoved"
 
 prune: clean
-	@docker system prune -f
+	echo "\r\033[K\033[31m[Compose] \033[0mPruning"
+	sudo docker system prune -f > /dev/null 2> /dev/null
+	echo "\033[1A\r\033[K\r\033[K\033[31m[Compose] \033[0mPruned"
 
-re: clean all
+re: prune all
 
-.PHONY: all reload stop clean prune re
+rambo:
+	echo '   ∧＿∧  '
+	echo '  ( ･ω･) '
+	echo '――∪――――∪―――'
+	echo ' Inception '
+	echo '___________'
+	echo '  |    | '
+	echo '  |    | '
+	echo '   U  U  '
+
+.PHONY: all stop clean prune re rambo
+.SILENT: all stop clean prune re rambo
