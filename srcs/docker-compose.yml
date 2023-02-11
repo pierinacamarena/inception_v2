@@ -11,14 +11,34 @@ services:
       - .env
     volumes:
       - mariadb_v:/var/lib/mysql
+    networks:
+      - inception
+  wordpress:
+    container_name: wordpress
+    build: ./requirements/wordpress
+    restart: on-failure
+    ports:
+     - "127.0.0.1:9000:9000"
+    env_file:
+      - .env
+    volumes:
+      - wordpress_v:/var/www/html
+    depends_on:
+      - mariadb
+    networks:
+      - inception
   nginx:
     container_name: nginx
     build: ./requirements/nginx
     ports:
       - "443:443"
     restart: always
-#volumes:
-#- ./html_data:/var/www/html
+    volumes:
+    - ./html_data:/var/www/html
+    depends_on:
+      - wordpress
+    networks:
+      - inception
 
 
 volumes:
@@ -28,3 +48,13 @@ volumes:
       type: 'none' 
       o: 'bind'										 # Les Bind Mounts sont des volumes qui se montent sur un chemin d'accès à l'hôte, et ils peuvent être modifiés par d'autres processus en dehors de docker.
       device: '/home/pcamaren/data/mariadb_v'
+  wordpress_v:
+    driver: local #default volume driver on linux
+    driver_opts:
+      type: 'none' 
+      o: 'bind'										 # Les Bind Mounts sont des volumes qui se montent sur un chemin d'accès à l'hôte, et ils peuvent être modifiés par d'autres processus en dehors de docker.
+      device: '/home/pcamaren/data/wordpress_v'
+
+networks:
+  inception:
+    driver: bridge
