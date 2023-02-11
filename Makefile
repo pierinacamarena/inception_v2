@@ -1,29 +1,36 @@
+ERASELINE=\r\033[K
+UPFIVE=\033[5A
+UP=\033[1A
+DOWNFOUR=\033[4B
 
+BLUE=\033[34m
+RED=\033[31m
+NOCOLOR=\033[0m
 
 all: rambo ramboprune
-	echo "\033[5A\033[K\033[34m Launching\033[0m\033[4B"
+	echo "$(UPFIVE)$(ERASELINE)$(BLUE) Launching$(NOCOLOR)$(DOWNFOUR)"
 	sudo docker-compose -f srcs/docker-compose.yml up --build -d > /dev/null 2> /dev/null
-	echo "\033[5A\033[K\033[34m Launched\033[0m\033[4B"
+	echo "$(UPFIVE)$(ERASELINE)$(BLUE) Launched$(NOCOLOR)$(DOWNFOUR)"
 
 reload: ramboprune
-	echo "\033[5A\033[K\033[34m Launching\033[0m\033[4B"
+	echo "$(UPFIVE)$(ERASELINE)$(BLUE) Launching$(NOCOLOR)$(DOWNFOUR)"
 	sudo docker-compose -f srcs/docker-compose.yml up --build -d > /dev/null 2> /dev/null
-	echo "\033[5A\033[K\033[34m Launched\033[0m\033[4B"
+	echo "$(UPFIVE)$(ERASELINE)$(BLUE) Launched$(NOCOLOR)$(DOWNFOUR)"
 
 stop:
-	echo "\r\033[K\033[31m[Compose] \033[0mStopping"
+	echo "$(ERASELINE)$(RED)[Compose] $(NOCOLOR)Stopping"
 	sudo docker-compose -f srcs/docker-compose.yml down > /dev/null 2> /dev/null
-	echo "\033[1A\r\033[K\r\033[K\033[31m[Compose] \033[0mStopped"
+	echo "$(UP)$(ERASELINE)$(RED)[Compose] $(NOCOLOR)Stopped"
 
 clean: stop
-	echo "\r\033[K\033[31m[Volume] \033[0mRemoving"
+	echo "$(ERASELINE)$(RED)[Volume] $(NOCOLOR)Removing"
 	sudo docker-compose -f srcs/docker-compose.yml down --volumes --rmi all > /dev/null 2> /dev/null
-	echo "\033[1A\r\033[K\r\033[K\033[31m[Volume] \033[0mRemoved"
+	echo "$(UP)$(ERASELINE)$(RED)[Volume] $(NOCOLOR)Removed"
 
 prune: clean
-	echo "\r\033[K\033[31m[Compose] \033[0mPruning"
+	echo "$(ERASELINE)$(RED)[Compose] $(NOCOLOR)Pruning"
 	sudo docker system prune -f > /dev/null 2> /dev/null
-	echo "\033[1A\r\033[K\r\033[K\033[31m[Compose] \033[0mPruned"
+	echo "$(UP)$(ERASELINE)$(RED)[Compose] $(NOCOLOR)Pruned"
 
 re: prune reload
 
