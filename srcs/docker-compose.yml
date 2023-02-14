@@ -3,6 +3,7 @@ version: '3'
 services:
   mariadb:
     container_name: mariadb
+    image: mariadb
     build: ./requirements/mariadb
     restart: on-failure
     ports:
@@ -15,6 +16,7 @@ services:
       - inception
   wordpress:
     container_name: wordpress
+    image: wordpress
     build: ./requirements/wordpress
     restart: on-failure
     ports:
@@ -29,6 +31,7 @@ services:
       - inception
   nginx:
     container_name: nginx
+    image: nginx
     build: ./requirements/nginx
     ports:
       - "443:443"
