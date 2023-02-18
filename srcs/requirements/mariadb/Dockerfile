@@ -18,6 +18,7 @@ RUN mkdir -p /run/mysqld /var/lib/mysql\
 #when the docker image is built from this dockerfile
 #the directory will be initialized and ready for use 
 #when a container is started from the image
+#--skip-test-db is to skip the creation of the test database
 RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal --skip-test-db
 
 #Copy the my.cnf file into the directory /etc/mysql/, in the my.cnf file we specify the port and set
