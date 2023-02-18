@@ -2,6 +2,7 @@
 
 set -eux
 
+#Installation of wordpress
 if [ ! -f "/var/www/wordpress/chech_install" ]; then
 	wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
 	cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && \
@@ -13,8 +14,10 @@ else
 	echo "wordpress already installed"
 fi
 
+#waiting for the maria db database to become available
 sleep 10
 
+#create wp-config.php file to connect Wordpress with MariaDB
 if [ ! -f "/var/www/wordpress/wp-config.php" ]; then
 	wp config create --allow-root \
 		--dbname="$MYSQL_DATABASE" \
@@ -46,9 +49,12 @@ if [ ! -f /var/www/wordpress/user_chech ]; then
 	touch /var/www/wordpress/user_chech
 fi
 
+#set ownership of /var/www directory to www-data user and group
 chown -R www-data:www-data /var/www/*
+#set permissions of /var/www directory to www-data user and group
 chmod -R 755 /var/www/*
 
+#create directory for the php-fpm to communicate with the web server to handle php requests
 mkdir -p /run/php
 
 exec /usr/sbin/php-fpm7.3 -F
