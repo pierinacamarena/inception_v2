@@ -22,10 +22,7 @@ RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 -nodes \
 COPY ./conf/nginx.conf /etc/nginx/conf.d
 
 #expose port 443 (only port allowed) to allow incoming corrections
-#EXPOSE 80
 EXPOSE 443
-
-#RUN mkdir -p /var/run/nginx
 
 #start Nginx when the container is run 
 CMD ["nginx", "-g", "daemon off;"]
